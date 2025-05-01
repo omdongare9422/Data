@@ -1,0 +1,151 @@
+#include <p18f4520.h>
+#pragma config OSC = HS 
+#pragma config WDT = OFF 
+#pragma config LVP = OFF 
+#pragma config PBADEN = OFF 
+
+#define LCD_DATA    PORTD              
+#define en          PORTEbits.RE2     
+#define rw          PORTEbits.RE1      
+#define rs          PORTEbits.RE0     
+
+
+void ADC_Init(void);					
+unsigned int Get_ADC_Result(void);		
+void Start_Conversion(void);			
+void msdelay (unsigned int time);		
+void init_LCD(void);							
+void LCD_command(unsigned char cmd);	
+void LCD_data(unsigned char data);		
+void LCD_write_string( char *str);
+
+
+void main()
+{ 
+ char msg1[] = "LM35 Interface";
+ char msg2[] = "Temp.:";
+ char msg3[] = {0xDF, 0x43, 0x00};
+ unsigned char temp=0;
+ unsigned char i=0, Thousands,Hundreds,Tens,Ones;
+ unsigned int adc_val;
+ unsigned char val, pot0[6];
+ ADCON1 = 0x0F;        //Configuring the PORTE pins as digital I/O 
+ TRISD = 0x00;         //Configuring PORTD as output
+ TRISE = 0x00;         //Configuring PORTE as output
+	
+ 
+	
+ ADC_Init();				// Init ADC peripheral
+ init_LCD();				// Init LCD Module
+ LCD_write_string(msg1);	// Display Welcome Message
+ LCD_command(0xC0);			// Goto second line, 0th place of LCD
+ LCD_write_string(msg2);	// Display Message "Temp:"
+ 
+ while(1)
+ {
+  Start_Conversion();		//Trigger conversion
+  adc_val= Get_ADC_Result();//Get the ADC output by polling GO bit
+  adc_val = adc_val/2;		//Divide the value by 2 match with 10mv stepsize
+  LCD_command (0xC7);		//Goto 8th place on second line of LCD 
+  
+  val = (unsigned char) adc_val;
+  i = (val/100);	//Get the Hundreds place
+  Hundreds = i + 0x30;		// Convert it to ASCII
+  LCD_data (Hundreds);		//Display Hundreds place
+  
+  i = (val%100)/10; //Get the Tens place
+  Tens = i + 0x30;			// Convert it to ASCII
+  LCD_data (Tens);			//Display Tens place
+  	
+  i = adc_val%10 ;			//Get the Ones place
+  Ones = i + 30; 			// Convert it to ASCII
+  LCD_data (i + 0x30);		//Display Ones place
+ 
+ 
+  LCD_write_string(msg3);
+ 
+  msdelay(300);		//Delay between conversions. 
+ }
+ 
+} 
+ 
+
+//Function Definitions
+void ADC_Init()
+{
+ ADCON0=0b00000100;	//A/D Module is OFF and Channel 1 is selected
+ ADCON1=0b00001110;	// Reference as VDD & VSS, AN0 set as analog pins
+ ADCON2=0b10001110; // Result is right Justified
+					//Acquisition Time 2TAD
+					//ADC Clk FOSC/64
+ ADCON0bits.ADON=1; //Turn ON ADC module
+}
+
+void Start_Conversion()
+{
+ ADCON0bits.GO=1;
+}
+
+//If you do not wish to use adc conversion interrupt you can use this
+//to do conversion manually. It assumes conversion format is right adjusted
+unsigned int Get_ADC_Result()
+{
+ unsigned int ADC_Result=0;
+ while(ADCON0bits.GO);
+ ADC_Result=ADRESL;
+ ADC_Result|=((unsigned int)ADRESH) << 8;
+ return ADC_Result;
+} 
+
+void msdelay (unsigned int time) //Function to generate delay
+{
+unsigned int i, j;
+  for (i = 0; i < time; i++)
+	for (j = 0; j < 275; j++);//Calibrated for a 1 ms delay in MPLAB
+}
+
+
+void init_LCD(void)		// Function to initialise the LCD
+{
+    LCD_command(0x38);      // initialization of 16X2 LCD in 8bit mode
+    msdelay(15);
+    LCD_command(0x01);      // clear LCD
+    msdelay(15);
+    LCD_command(0x0C);      // cursor off
+    msdelay(15);
+    LCD_command(0x80);      // go to first line and 0th position
+    msdelay(15);
+}
+
+void LCD_command(unsigned char cmd) //Function to pass command to the LCD
+{
+    LCD_DATA = cmd;		//Send data on LCD data bus
+    rs = 0;				//RS = 0 since command to LCD
+    rw = 0;				//RW = 0 since writing to LCD
+    en = 1;				//Generate High to low pulse on EN
+    msdelay(15);
+    en = 0;
+}
+
+void LCD_data(unsigned char data)//Function to write data to the LCD
+{
+    LCD_DATA = data;	//Send data on LCD data bus
+    rs = 1;				//RS = 1 since data to LCD
+    rw = 0;				//RW = 0 since writing to LCD
+    en = 1;				//Generate High to low pulse on EN
+  	msdelay(15);
+    en = 0;
+}
+//Function to write string to LCD
+void LCD_write_string(char *str)   
+{
+    int i = 0;
+    while (str[i] != 0)
+    {
+        LCD_data(str[i]);      // sending data on LCD byte by byte
+        msdelay(15);
+        i++;
+    }
+}
+
+
