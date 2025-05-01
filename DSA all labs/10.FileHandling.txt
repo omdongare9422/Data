@@ -1,0 +1,312 @@
+
+
+
+
+
+
+
+
+#include <iostream>
+#include<fstream>
+#include<cstring>
+#include<iomanip>
+using namespace std;
+
+const int MAX=20;
+
+class Student{
+ int rollno;
+ char name[20],city[20];
+ char div;
+ int year;
+public:
+ Student(){
+  strcpy(name,"");
+  strcpy(city,"");
+  rollno=year=div=0;
+ }
+ 
+ Student(int rollno,char name[MAX],int year,char div,char city[MAX]){
+  strcpy(this->name,name);
+  strcpy(this->city,city);
+  this->rollno=rollno;
+  this->year=year;
+  this->div=div;
+ }
+ 
+ int getRollNo(){
+  return rollno;
+ }
+ 
+ void displayRecord(){
+  cout<<endl<<setw(5)<<rollno<<setw(20)<<name<<setw(5)<<year<<setw(5)<<div<<setw(10)<<city;
+ }
+};
+
+class FileOperations{
+ fstream file;
+public:
+ FileOperations(char* filename){
+    file.open(filename,ios::in|ios::out|ios::ate|ios::binary);
+}
+
+ void insertRecord(int rollno, char name[MAX],int year, char div,char city[MAX]){
+  Student s1(rollno,name,year,div,city);
+  file.seekp(0,ios::end);
+  file.write((char *)&s1,sizeof(Student));
+  file.clear();
+ }
+ 
+ void displayAll(){
+  Student s1;
+  file.seekg(0,ios::beg);
+  while(file.read((char *)&s1, sizeof(Student))){
+   s1.displayRecord();
+  }file.clear();
+ }
+ 
+ void displayRecord(int rollNo){
+  Student s1;
+  file.seekg(0,ios::beg);
+  bool flag=false;
+  while(file.read((char*)&s1,sizeof(Student))){
+   if(s1.getRollNo()==rollNo){
+    s1.displayRecord();
+    flag=true;
+    break;
+   }
+  }
+  if(flag==false){
+   cout<<"\nRecord of "<<rollNo<<"is not present.";
+  }file.clear();
+ }
+ 
+ void deleteRecord(int rollno){
+  ofstream outFile("new.dat",ios::binary);
+  file.seekg(0,ios::beg);
+  bool flag=false;
+  Student s1;
+  while(file.read((char *)&s1, sizeof(Student))){
+   if(s1.getRollNo()==rollno){
+    flag=true;
+    continue;
+   }outFile.write((char *)&s1, sizeof(Student));
+  }
+  if(!flag){
+   cout<<"\nRecord of "<<rollno<<" is not present.";
+  }
+  
+  file.close();
+  outFile.close();
+  remove("student.dat");
+  rename("new.dat","student.dat");
+  file.open("student.dat",ios::in|ios::out|ios::ate|ios::binary);
+ }
+ ~FileOperations(){
+  file.close();
+  cout<<"\nFile Closed.";
+ }
+};
+
+int main() {
+ ofstream newFile("student.dat",ios::app|ios::binary);
+  newFile.close();
+  FileOperations file((char*)"student.dat");
+     int rollNo,year,choice=0;
+     char div;
+     char name[MAX],address[MAX];
+     while(choice!=5)
+     {
+         cout<<"\nStudent Database\n";
+         cout<<"1.Add New Record\n";
+         cout<<"2.Display All Records\n";
+         cout<<"3.Display by RollNo\n";
+         cout<<"4.Deleting a Record\n";
+         cout<<"5.Exit\n";
+         cout<<endl;
+         cout<<"Enter your choice : ";
+         cin>>choice;
+         switch(choice)
+         {
+             case 1 : 
+               cout<<endl<<"Enter RollNo and name : \n";
+               cin>>rollNo>>name;
+               cout<<"Enter Year and Division : \n";
+               cin>>year>>div;
+               cout<<"Enter address : \n";
+               cin>>address;
+               file.insertRecord(rollNo,name,year,div,address);
+               cout<<"\nRecord Inserted.";
+               cout<<endl;
+               break;
+             case 2 :
+               cout<<endl<<setw(5)<<"ROLL"<<setw(20)<<"NAME"<<setw(5)<<"YEAR"<<setw(5)<<"DIV"<<setw(10)<<"CITY";
+               file.displayAll();
+               cout<<endl;
+               break;
+             case 3 :
+               cout<<"Enter Roll Number: ";
+               cin>>rollNo;
+               file.displayRecord(rollNo);
+               cout<<endl;
+               break;
+             case 4:
+               cout<<"Enter Roll Number: ";
+               cin>>rollNo;
+               file.deleteRecord(rollNo);
+               break;
+            case 5 :break;
+         }
+     }
+ return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+Title: File Data Structure 
+
+Aim: To study File Data Structure 
+
+Problem Statement: Department maintains student’s database. The file contains roll number, name, division and address. 
+∙ Write a program to create a sequential file to store and maintain student data.
+∙ It should allow the user to add, delete information of student. 
+∙ Display information of a particular student. 
+∙ If the record of the student does not exist an appropriate message is displayed.(Search) 
+∙ If a student record is found it should display the student details. (Search).
+
+Requirements:Software, text editor, GDB Compiler, terminal, etc.
+
+Theory:
+Concepts of File: 
+
+1. Field: 
+∙ A field is an item of stored data. A field could be a name, a data, an address, a  description, a quantity, etc. 
+∙ When a field is defined it is given a name (identifier) and a type that defines the type of data that will be stored in that field. This is exactly same as defining a  variable within a program. 
+
+2. Record:  
+∙ A record is the collection of fields that can relate to a single entity.  
+∙ For example, we could have a student record that included fields for the student’s  name, address, homeroom, date of birth, etc.  
+∙ A product record could include fields for the serial number, description, cost price,  quantity in stock, etc. 
+ 
+File: 
+∙ A file is a collection of related records. The file size is limited by the size of memory  and storage medium. 
+∙ For example, a student file might include all of the records of students enrolled in a  school. 
+∙ A police department might keep a file of criminal record, which includes details about  all known criminals. 
+∙ Files are stored on secondary storage devices such as hard disks, CD ROMs etc.  Within a file, all records usually have the same structure. 
+∙ That is, every record in the file contains the same fields. Only the data stored in the  fields of different record will be different. 
+
+There are two important features of file: 
+1. File Activity:  File activity specifies percent of actual records which proceed in a single run. 
+2. File Volatility:  File volatility addresses the properties of record changes. It helps to increase the  efficiency of disk design than tape. 
+
+File Organization: File organization ensures that records are available for processing. It is used to determine an  efficient file organization for each base relation. For example, if we want to retrieve employee records in alphabetical order of name. Sorting the  file by employee name is a good file organization. However, if we want to retrieve all employees  whose marks are in a certain range, a file is ordered by employee name would not be a good file  organization. 
+
+Types of File Organization :-There are three types of organizing the file: 
+1. Sequential access file organization 
+2. Direct access file organization 
+3. Indexed sequential access file organization 
+
+1. Sequential access file organization: 
+∙ Storing and sorting in contiguous block within files on tape or disk is called as  sequential access file organization. 
+∙ In sequential access file organization, all records are stored in a sequential order.  The records are arranged in the ascending or descending order of a key field. ∙ Sequential file search starts from the beginning of the file and the records can be  added at the end of the file. 
+∙ In sequential file, it is not possible to add a record in the middle of the file without  rewriting the file. 
+
+∙ Advantages of sequential file 
+It is simple to program and easy to design. 
+Sequential file is best use if storage space. 
+
+Disadvantages of sequential file 
+ Sequential file is time consuming process.
+It has high data redundancy. 
+Random searching is not possible. 
+
+2. Direct access file organization: 
+∙ Direct access file is also known as random access or relative file organization. ∙ In direct access file, all records are stored in direct access storage device (DASD),  such as hard disk. The records are randomly placed throughout the file. ∙ The records does not need to be in sequence because they are updated directly and  rewritten back in the same location. 
+∙ This file organization is useful for immediate access to large amount of information.  It is used in accessing large databases. 
+∙ It is also called as hashing. 
+
+∙ Advantages of direct access file organization 
+ Direct access file helps in online transaction processing system (OLTP) like  online railway reservation system. 
+In direct access file, sorting of the records are not required. 
+ It accesses the desired records immediately. 
+ It updates several files quickly. 
+ It has better control over record allocation. 
+
+∙ Disadvantages of direct access file organization 
+ Direct access file does not provide backup facility. 
+ It is expensive. 
+ It has less storage space as compared to sequential file. 
+
+3. Indexed sequential access file organization: 
+∙ Indexed sequential access file combines both sequential file and direct access file  organization. 
+∙ In indexed sequential access file, records are stored randomly on a direct access device  such as magnetic disk by a primary key. 
+∙ This file have multiple keys. These keys can be alphanumeric in which the records  are ordered is called primary key. 
+∙ The data can be access either sequentially or randomly using the index. The index is  stored in a file and read into memory when the file is opened. 
+
+∙ Advantages of Indexed sequential access file organization 
+ In indexed sequential access file, sequential file and random file access is  possible. 
+ It accesses the records very fast if the index table is properly organized. o The records can be inserted in the middle of the file. 
+ It provides quick access for sequential and direct processing. 
+ It reduces the degree of the sequential search. 
+
+∙ Disadvantages of Indexed sequential access file organization 
+ Indexed sequential access file requires unique keys and periodic  reorganization. 
+ Indexed sequential access file takes longer time to search the index for the data  access or retrieval. 
+ It requires more storage space. 
+ It is expensive because it requires special software. 
+ It is less efficient in the use of storage space as compared to other file  organizations.
+
+Algorithms : 
+
+Algorithm to create Sequential File: 
+1) BEGIN CreateAFile 
+2) Open FriendsData for output 
+3) FOR i = 1 to 10 
+Display “Please enter the details for the next person: “ 
+Get fname, sname, emailaddr, mobile 
+Write FriendsData from fname, sname, emailaddr, mobile 
+4) NEXT i 
+5) Let fname = “xxx” 
+6) Let sname = “xxx” 
+7) Write FriednsData from fname, sname, emailaddr, mobile 
+8) Close FriednsData 
+9) END CreateAFile 
+
+Algorithm to print contents of Sequential File: 
+1) BEGIN DisplayFileContents 
+2) Open FriendsData for input 
+3) Read fname, sname, emailaddr, mobile from FriendsData 
+‘This is priming read, performed just before entering the loop to provide the first  record (if there is one) for printing’ 
+4) WHILE fname <> “xxx” AND sname <> “xxx” 
+Display fname, sname, emailaddr, mobile 
+Read fname, sname, emailaddr, mobile from FriendsData 
+‘this reads subsequent records which can then be tested for the sentinel value  before they processed’ 
+5) END WHILE 
+6) Close FriendsData
+7) END DisplayFileContents 
+
+Algorithm to Insert record in Sequential File: 
+1) BEGIN AddNewRecords 
+2) Open FriendsData for append 
+3) Display “Please enter the details for the first new person to be added 
+4) Display “Enter xxx for the first name and surname to indicate there are not more  records to be added.” 
+5) Get fname <> “xxx” AND sname <> “xxx” 
+6) Write FriendsData from fname, sname, emailaddr, mobile 
+7) Display “Please enter the details for the next new person to be added:” 
+8) Display “Enter xxx for the first name and surname to indicate there are not more  records to be added.” 
+9) Get fname, sname, emailaddr, mobile 
+10) END WHILE 
+11) Close FriendsData 
+12) END AddNewRecords 
+
+
+Algorithm of whole program:

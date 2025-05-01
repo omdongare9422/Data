@@ -1,0 +1,53 @@
+  #include <math.h>
+#include <GL/glut.h>
+#include <GL/glu.h>
+#include <GL/gl.h>
+
+void Init()
+{
+ // glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0.0,1.0,0.0,0); //To set Background Color
+  
+  glColor3f(1.0,0.0,0.0); //To set Foreground Color
+
+  gluOrtho2D(0 , 640 , 0 , 480);
+}
+
+void basics()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	glPointSize(5);
+	glBegin(GL_POINTS);
+		glVertex2i(100,150);
+	glEnd();
+
+	glLineWidth(4);
+
+	glBegin(GL_LINES);
+		glVertex2i(90,150);
+		glVertex2i(200,250);
+	glEnd();
+
+
+	glFlush();
+}
+
+int main(int argc, char **argv)
+{
+	glutInit(&argc,argv);   /* Set the initial display mode */
+
+  	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+
+ 	glutCreateWindow("DDA_Line"); /* Create the window with title "---" */
+  	glutInitWindowPosition(0,0); /* Set the initial window position and size */
+  	glutInitWindowSize(640,480);
+  
+  
+  	Init();  /* Initialize drawing colors */
+  
+  	glutDisplayFunc(basics);/* Call the Line function */
+ 
+ 
+  	glutMainLoop(); /* Keep displaying untill the program is closed */
+	return 0;
+}

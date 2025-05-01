@@ -1,0 +1,252 @@
+
+
+
+
+
+#include<iostream>
+using namespace std;
+
+struct bstnode{
+   int data;
+   struct bstnode *left, *right;
+};
+
+struct bstnode *newNode(char v){
+    bstnode* temp = new bstnode();
+    temp->data = v;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+struct bstnode* insert(struct bstnode* node, int key){
+    if (node == NULL) return newNode(key);
+    if (key < node->data)
+        node->left = insert(node->left, key);
+    else
+        node->right = insert(node->right, key);
+   return node;
+}
+
+struct bstnode* search(struct bstnode* root, int key){
+    if (root == NULL || root->data == key) 
+        return root; 
+    if (root->data < key) 
+       return search(root->right, key); 
+    else
+        return search(root->left, key); 
+}
+
+struct bstnode * minValueNode(struct bstnode* node){
+    struct bstnode* current = node;
+    while (current && current->left != NULL)
+        current = current->left;
+    return current;
+}
+
+struct bstnode* deleteNode(struct bstnode* root, int key){
+    if (root == NULL) 
+        return root;
+    if (key < root->data)
+        root->left = deleteNode(root->left, key);
+    else if (key > root->data)
+        root->right = deleteNode(root->right, key);
+   else
+    {
+        if (root->left == NULL){
+            struct bstnode *temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL){
+            struct bstnode *temp = root->left;
+            free(root);
+            return temp;
+        }
+        else{
+            struct bstnode* temp = minValueNode(root->right);
+            root->data = temp->data;
+            root->right = deleteNode(root->right, temp->data);
+        }
+    }
+   return root;
+}
+
+struct bstnode* copy(struct bstnode *root){
+    bstnode *root2;
+    if(root==NULL)
+        return NULL;
+    root2=new bstnode;
+    root2->left=copy(root->left);
+    root2->right=copy(root->right);
+    root2->data=root->data;
+    return root2;
+}
+
+int main(){
+    struct bstnode *root = NULL;
+    struct bstnode *root2=NULL;
+    struct bstnode *root1=NULL;
+    struct bstnode *root3=NULL;
+    int ch,n,d,depth;
+    while(1)
+    {
+        cout<<endl<<"Which operation would you want to perform?";
+        cout<<endl<<"1.INSERT";
+        cout<<endl<<"2.DELETE";
+        cout<<endl<<"3.SEARCH";
+        cout<<endl<<"4.TRAVERSAL";
+        cout<<endl<<"5.DEPTH OF BST";
+        cout<<endl<<"6.MIRROR IMAGE";
+        cout<<endl<<"7.EXIT";
+        cout<<endl;
+        cout<<"\nEnter your choice: ";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1:
+                cout<<"\nEnter number of values to insert: ";
+                cin>>n;
+                cout<<"\nEnter the values to create BST:\n ";
+                for(int i=0; i<n; i++)
+                {
+                    cin>>d;
+                    root = insert(root, d);
+                }
+                break;
+            case 2:
+                cout<<"\nEnter the element to delete: ";
+                cin>>d;
+                root3=deleteNode(root, d);
+                break;
+            case 3:
+                cout<<"\nEnter the element to search: ";
+                cin>>d;
+                root1=search(root, d);
+                if(root1!=NULL)
+                    cout<<"\nFound in BST!!";
+                else
+                    cout<<"\nNot Found in BST!!";
+                break;
+            case 4:
+                cout<<"\nTraversal of BST: ";
+                inorder(root);
+                break;
+            case 5:
+                depth=Maxdepth(root);
+                cout<<"The depth of BST is: "<<depth;
+                break;
+            case 6:
+                mirror(root);  
+                cout <<"\nInorder traversal of the mirror BST is: ";  
+                inorder(root); 
+                mirror(root);
+                break;
+            case 7:
+                return 0;
+            default: 
+                cout<<"\nWrong Option";
+        }
+    } 
+    return 0;
+}
+
+void inorder(struct bstnode *root){ 
+    if (root != NULL) 
+    { 
+        inorder(root->left); 
+        cout<<root->data<<" "; 
+        inorder(root->right); 
+    } 
+} 
+
+void mirror(struct bstnode* node){ 
+    if (node == NULL)  
+        return;  
+    else{ 
+        struct bstnode* temp; 
+        mirror(node->left); 
+        mirror(node->right);
+        temp= node->left; 
+        node->left = node->right; 
+        node->right = temp; 
+    } 
+}  
+
+int Maxdepth(struct bstnode *root){
+    if(root==NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        int depth1=Maxdepth(root->left); 
+        int depth2=Maxdepth(root->right); 
+        if(depth1>depth2)
+            return (depth1+1);
+        else
+            return (depth2+1);
+    }
+}
+
+
+
+
+
+
+
+
+Title: Binary Search Tree Operations 
+
+Aim: Implementation of Binary Search Tree and Performing Operations. 
+
+Objective: Implementation of Binary Search Tree and Performing Operations. 
+
+Problem Statement:Implement binary search tree and perform following operations: 
+a) Insert (Handle insertion of duplicate entry) 
+b) Delete 
+c) Search 
+d) Display tree (Traversal) 
+e) Display - Depth of tree 
+f) Display - Mirror image 
+g) Create a copy 
+h) Display all parent nodes with their child nodes 
+i) Display leaf nodes 
+j) Display tree level wise 
+
+Requirements:Software, text editor, GDB Compiler, terminal, etc.
+
+Theory:
+Binary Search Tree: - Binary search tree is a data structure that quickly allows us to maintain  a sorted list of numbers. It is called a binary tree because each tree node has a maximum of  two children. It is called a search tree because it can be used to search for the presence of a  number in O(log(n)) time. 
+
+The properties that separate a binary search tree from a regular binary tree is: 
+∙ All nodes of left subtree are less than the root node 
+∙ All nodes of right subtree are more than the root node 
+∙ Both subtrees of each node are also BSTs i.e. they have the above two properties. 
+
+Some Basic Operations of Binary Search Tree Are as Follows:- 
+
+1. Search Operation :- The algorithm depends on the property of BST that if each left  subtree has values below root and each right subtree has values above the root.If the value is below the root, we can say for sure that the value is not in the right subtree; we need to  only search in the left subtree and if the value is above the root, we can say for sure that the  value is not in the left subtree; we need to only search in the right subtree.
+
+2. Insert Operation :- Inserting a value in the correct position is similar to searching because  we try to maintain the rule that the left subtree is lesser than root and the right subtree is  larger than root.We keep going to either right subtree or left subtree depending on the  value and when we reach a point left or right subtree is null, we put the new node there. 
+
+3. Deletion :- There are three cases for deleting a node from a binary search tree. 
+Case I: 
+In the first case, the node to be deleted is the leaf node. In such a case, simply delete the node from the tree. 
+
+Case II: 
+In the second case, the node to be deleted lies has a single child node. In such a case follow  the steps below: 
+Replace that node with its child node. 
+Remove the child node from its original position. 
+
+Case III: 
+In the third case, the node to be deleted has two children. In such a case follow the steps  below: 
+1. Get the inorder successor of that node. 
+2. Replace the node with the inorder successor. 
+3. Remove the inorder successor from its original position. 
+
+Binary Search Tree Applications: 
+1. In multilevel indexing in the database 
+2. For dynamic sorting 
+3. For managing virtual memory areas in Unix kernel 
+
+Algorithm of whole program:

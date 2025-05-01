@@ -1,0 +1,113 @@
+
+
+
+
+
+
+#include <iostream>
+using namespace std;
+
+void MaxHeapify(int a[], int i, int n){
+	int j, temp;
+	temp = a[i];
+	j = 2*i;
+ 	while (j <= n)
+	{
+		if (j < n && a[j+1] > a[j])
+		j = j+1;
+		if (temp > a[j])
+			break;
+		else if (temp <= a[j])
+		{
+			a[j/2] = a[j];
+			j = 2*j;
+		}
+	}
+	a[j/2] = temp;
+	return;
+}
+
+void HeapSort(int a[], int n){
+	int i, temp;
+	for (i = n; i >= 2; i--)
+	{
+		temp = a[i];
+		a[i] = a[1];
+		a[1] = temp;
+		MaxHeapify(a, 1, i - 1);
+	}
+}
+
+void Build_MaxHeap(int a[], int n){
+	int i;
+	for(i = n/2; i >= 1; i--)
+		MaxHeapify(a, i, n);
+}
+
+int main()
+{
+	int n, i;
+	cout<<"How many data elements are to be sorted? : ";
+	cin>>n;
+	n++;
+	int arr[n];
+	for(i = 1; i < n; i++)
+	{
+		cout<<endl;
+		cout<<"Enter element "<<i<<": ";
+		cin>>arr[i];
+	}
+	Build_MaxHeap(arr, n-1);
+	HeapSort(arr, n-1);
+	cout<<"\nSorted Data :";
+	for (i = 1; i < n; i++)
+		cout<<"->"<<arr[i];
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+Title: Heap Data Structure  
+
+Aim: To study Heap Data Structure 
+ 
+Problem Statement: Implement Heap sort to sort a given set of values using Max heap or Min heap. 
+
+Requirements:Software, text editor, GDB Compiler, terminal, etc.
+
+Theory:
+Heap Data Structure: A Heap is a special Tree-based data structure in which the tree is a complete binary tree. 
+
+Generally, Heaps can be of two types:  
+1. Max-Heap:  In a Max-Heap the key present at the root node must be greatest among the keys present  at all of its children. The same property must be recursively true for all sub-trees in that  Binary Tree.  
+
+2. Min-Heap:  
+In a Min-Heap the key present at the root node must be minimum among the keys  present at all of its children. The same property must be recursively true for all sub trees in that Binary Tree.
+
+Algorithms: 
+ 
+1. Algorithm for Insert Operation on Heap Data Structure: 
+Step 1: Add the element to the bottom level of the heap at the most left.
+Step 2: Compare the added element with its parent, if they are in the correct order, stop. • Step 3: If not, swap the element with its parent and return to the previous step. 
+
+2. Algorithm for the Delete Operation on Heap Data Structure: 
+Step 1: Replace the root of the heap with the last element on its last level. 
+Step 2: Compare the new root with its children; if they are in the correct order, stop. 
+Step 3: If not, swap the element with one of its children and return to the previous step.  (Swap with its smaller child in a min-heap and its larger child in a max-heap). 
+
+3. Algorithm for Heap Sort: 
+Step 1: Construct a Binary Tree with given list of Elements. 
+Step 2: Transform the Binary Tree into Min-Heap. 
+Step 3: Delete the root element from Min-Heap using Heapify method. 
+Step 4: Put the deleted element into the Sorted list. 
+Step 5: Repeat the same until Min-Heap becomes empty. 
+Step 6: Display the sorted list. 
+
+Algorithm of whole program:

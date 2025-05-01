@@ -1,0 +1,109 @@
+/*Create the class as Assignment_no2*/
+
+
+
+package ass2;
+
+import java.util.*;
+
+class Publication {
+      String Title;
+      int copies;
+      float price;
+
+      Publication(String title, int copy, float amount) {
+            this.Title = title;
+            this.copies = copy;
+            this.price = amount;
+      }
+
+      public void salecopy(int qty) {
+            System.out.println("Total sale of publication:" + qty * price);
+      }
+
+      int getcopies() {
+            return this.copies;
+      }
+
+      public void setcopies(int cps) {
+            this.copies = cps;
+      }
+}
+
+class Book extends Publication {
+      String author;
+
+      public Book(String title, int copy, float amount, String au) {
+            super(title, copy, amount);
+            this.author = au;
+      }
+
+      public void orderCopies(int cp) {
+            setcopies(getcopies() + cp);
+            System.out.println("\n\nCopies of " + Title + ":" + copies);
+      }
+
+      public void salecopy(int qty) {
+            System.out.println("Author of book:" + author);
+            System.out.println("Total sale of publication:" + qty * price);
+      }
+}
+
+class Magazine extends Publication {
+      int orderQty;
+      String currIssues;
+
+      public Magazine(String title, int copy, float amount, int orqty, String currentI) {
+            super(title, copy, amount);
+            this.orderQty = orqty;
+            this.currIssues = currentI;
+      }
+
+      public void revnewIssues(String newissues) {
+            setcopies(orderQty);
+            currIssues = newissues;
+            System.out.println("new issues month:" + currIssues);
+      }
+
+      public void salecopy(int qty) {
+            System.out.println("Total sale of publication:" + qty * price);
+      }
+}
+
+public class Assignment_no2 {
+      public static void main(String[] args) {
+            String t, auth, curissue;
+            int cops, oqty;
+            float pr;
+
+            Scanner input = new Scanner(System.in);
+            System.out.println("Title:");
+            t = input.nextLine();
+            System.out.println("Copies:");
+            cops = input.nextInt();
+            System.out.println("order Quantity:");
+            oqty = input.nextInt();
+            System.out.println("Price:");
+            pr = input.nextFloat();
+            System.out.println("Current Issues:");
+            curissue = input.next();
+            System.out.println("Author:");
+            auth = input.next();
+            // object creation and value initalization
+
+            Book b = new Book(t, cops, pr, auth);
+            // call methos
+            b.orderCopies(cops);
+            b.salecopy(cops);
+            
+            Magazine m = new Magazine(t, cops, pr, oqty, curissue);
+            m.revnewIssues("june");
+            m.salecopy(7);
+
+      }
+}
+      
+      
+      
+      
+       

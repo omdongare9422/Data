@@ -1,0 +1,223 @@
+1.)-------------------------------------------------------------------------------------------------
+#include <stdio.h>
+//#include <math.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
+// Center of the cicle = (320, 240)
+int xc = 320, yc = 240;
+
+// Plot eight points using circle's symmetrical property
+void plot_point(int x, int y){
+  glBegin(GL_POINTS);
+  glVertex2i(x+xc, y+yc);
+  glVertex2i(-x+xc, y+yc);
+  glVertex2i(-x+xc, -y+yc);
+  glVertex2i(x+xc,-y+yc);
+  glVertex2i(y+xc, x+yc);
+  glVertex2i(-y+xc, x+yc);
+  glVertex2i(-y+xc, -x+yc);
+  glVertex2i(y+xc, -x+yc);
+  glEnd();
+  /*glBegin(GL_POINTS);
+  glVertex2i(x, y);
+  glVertex2i(-x, y);
+  glVertex2i(-x, -y);
+  glVertex2i(x,-y);
+  glVertex2i(y, x);
+  glVertex2i(-y, x);
+  glVertex2i(-y, -x);
+  glVertex2i(y, -x);
+  glEnd();*/
+}
+
+// Function to draw a circle using bresenham's
+// circle drawing algorithm
+void bresenham_circle(int r){
+  int x=0,y=r;
+  float s=3-(2*r);
+  /* Plot the points */
+  /* Plot the first point */
+  plot_point(x,y);
+  int k;
+  /* Find all vertices till x=y */
+  while(x <= y)
+  {
+    //x = x + 1;
+	//s = s + 4*x + 6;
+    if(s <= 0)
+    {	
+      //pk = pk + 2*x+1;
+	s = s + (4*x) + 6;
+	x++;
+    }
+    else
+    {
+      s = s + (4*x) - (4*y) + 10;
+      x++; 	
+      y = y - 1;
+      //pk = pk + 2*(x - y) + 1;
+    }
+    plot_point(x,y);
+  }
+  glFlush();
+}
+
+// Function to draw two concentric circles
+void concentric_circles(void){
+  /* Clears buffers to preset values */
+  glClear(GL_COLOR_BUFFER_BIT);
+  int radius1 = 100, radius2 = 200;
+  bresenham_circle(radius1);
+  bresenham_circle(radius2);
+}
+
+void Init(){
+  /* Set clear color to white */
+  glClearColor(1.0,1.0,1.0,0);
+  /* Set fill color to black */
+  glColor3f(0.0,0.0,0.0);
+  /* glViewport(0 , 0 , 640 , 480); */
+  /* glMatrixMode(GL_PROJECTION); */
+  /* glLoadIdentity(); */
+  gluOrtho2D(0 , 640 , 0 , 480);
+}
+
+void main(int argc, char **argv){
+  /* Initialise GLUT library */
+  glutInit(&argc,argv);
+  /* Set the initial display mode */
+  glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+  /* Set the initial window position and size */
+  glutInitWindowPosition(0,0);
+  glutInitWindowSize(640,480);
+  /* Create the window with title "Bresenham-Circle" */
+  glutCreateWindow("bresenham_circle");
+  /* Initialize drawing colors */
+  Init();
+  /* Call the displaying function */
+  glutDisplayFunc(concentric_circles);
+  /* Keep displaying untill the program is closed */
+  glutMainLoop();
+}
+
+2.)(circle modify)-------------------------------------------------------------------------
+#include<stdio.h>
+#include<math.h>
+#include<GL/glut.h>
+
+int X1,X2,Y2,Y1,R,R1,len; //y2,x2;
+
+void Circle(int r){
+	int xc,yc,s;
+	xc=0;  //First point which will be on circumference of circle
+	yc=r;
+	s=3-(2*r);   //Decision parameter calculation
+	glPointSize(4);        //To increase size of pixel
+	glBegin(GL_POINTS);    //Points primitive started
+	//glVertex2d(xc,yc);     
+	//plotted first point using symmetry property
+	glVertex2d(xc+X1,yc+Y1);  
+	glVertex2d(-xc+X1,yc+Y1);  
+	glVertex2d(-xc+X1,-yc+Y1);  		
+	glVertex2d(xc+X1,-yc+Y1);  
+	while(xc<=yc){
+		if(s<=0){
+			//p=p+(2*xc)+1;
+			s=s+(4*xc)+6;
+			xc++;
+		}
+		else{
+			//p=p+(2*(xc-yc))+1;
+			s=s+(4*xc)-(4*yc)+10;
+			xc++;
+			yc--;
+		}
+		glVertex2d(xc+X1,yc+Y1);            //plotted new coordinates using symmetry property
+		glVertex2d(-xc+X1,yc+Y1);
+		glVertex2d(xc+X1,-yc+Y1);
+		glVertex2d(-xc+X1,-yc+Y1);
+		glVertex2d(yc+X1,xc+Y1);
+		glVertex2d(-yc+X1,xc+Y1);
+		glVertex2d(yc+X1,-xc+Y1);
+		glVertex2i(-yc+X1,-xc+Y1);
+	}
+	glEnd();
+}
+
+void lineDDA(double a1,double b1, double a2,double b2){
+	double dx=(a2-a1);
+	double dy=(b2-b1);
+	double steps;
+	int k;
+	float xInc,yInc,X=a1,Y=b1;
+	steps=(abs(dx)>=abs(dy))?(abs(dx)):(abs(dy));
+	xInc=dx/(float)steps;
+	yInc=dy/(float)steps;
+	glClear(GL_COLOR_BUFFER_BIT);
+	glBegin(GL_POINTS);
+	glVertex2d(X,Y);
+	for(k=0;k<steps;k++)
+	{
+		X=X+xInc;
+		Y+=yInc;
+		glVertex2d(X,Y);
+	}
+}
+
+void points(){
+	lineDDA(X2,Y2,X2+len,Y2);  //Base of triangle
+	
+	int newy = sqrt(pow(len,2)-pow((len/2),2));
+	
+	lineDDA(X2,Y2,X2+(len/2),newy+Y2);
+	lineDDA(X2+len,Y2,X2+(len/2),newy+Y2);
+	
+	X1 = (X2+(X2+len)+(X2+(len/2)))/3; //Center coordinates calculation
+	Y1 = (Y2+Y2+(newy+Y2))/3;
+	
+	R = (sqrt(3)*len)/3;  //Calculation of outer circle radius
+	
+	Circle(R);   //outer Circle
+	R1 = (sqrt(3)*len)/6; //Calculation of Inner circle radius
+	
+	Circle(R1);  //Inner Circle
+	glBegin(GL_LINES);
+	glVertex2i(glutGet(GLUT_WINDOW_WIDTH)/2,0);
+    glVertex2i(glutGet(GLUT_WINDOW_WIDTH)/2,glutGet(GLUT_WINDOW_HEIGHT)); 
+	glVertex2i(0,glutGet(GLUT_WINDOW_HEIGHT)/2);
+	glVertex2i(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT)/2);
+    glEnd();
+}
+
+void Display(){
+	glClear(GL_COLOR_BUFFER_BIT);
+	points();
+	glFlush();
+}
+
+void Init(){
+	glClearColor(1.0,1.0,1.0,0.0);
+	glColor3f(0.0,0.0,0.0);
+	gluOrtho2D(0,640,0,480);
+}
+
+int main(int argc, char **argv){
+	printf("\nEnter the length of the triangle:");
+	scanf("%d",&len);
+	printf("\nEnter starting coordinate for the triangle:");
+	scanf("%d%d",&X2,&Y2);
+	X2= X2+320;
+	Y2=Y2+240;
+	glutInit(&argc,argv);
+	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
+	glutInitWindowPosition(0,0);
+	glutInitWindowSize(640,480);
+	glutCreateWindow("Circle with Triangle");
+	Init();
+	glutDisplayFunc(Display);
+	glutMainLoop();
+	return(0);
+}
+op:- length 50; coords 100 -100

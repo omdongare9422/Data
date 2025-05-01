@@ -1,0 +1,69 @@
+/*Create the class as Assignment4*/
+
+
+
+
+
+package ass4;
+
+import java.util.*;
+
+abstract class Shape {
+
+    double val1, val2;
+
+    void input() {
+        Scanner s = new Scanner(System.in);
+
+        System.out.println("First value");
+        val1 = s.nextDouble();
+
+        System.out.println("Second value");
+        val2 = s.nextDouble();
+
+    }
+
+    abstract void Compute_area();
+
+}
+
+class Triangle extends Shape {
+    void Compute_area() {
+        System.out.println("Enter Values For Traiangle\n");
+        input();
+        double area;
+        area = 0.1f / 0.2 * val1 * val2;
+        System.out.println("Traiangle Area :" + area);
+    }
+}
+
+class Rectangle extends Shape {
+    void Compute_area() {
+        System.out.println("Enter Values For Rectangle\n");
+        input();
+        double area;
+        area = val1 * val2;
+        System.out.println("Rectangle area :" + area);
+    }
+}
+
+public class Assignment4 {
+    public static void main(String args[]) {
+        // Shape s; // refrence of base class
+
+        Shape T = new Triangle();
+        Shape R = new Rectangle();
+
+        // Triangle T = new Triangle();
+        // Rectangle R = new Rectangle();
+
+        // s = T;
+
+        T.Compute_area();
+
+        // s = R;
+
+        R.Compute_area();
+
+    }
+}
