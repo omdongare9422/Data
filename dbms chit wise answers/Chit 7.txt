@@ -1,0 +1,66 @@
+Creating the Base Tables
+We'll need at least two tables (Employee and Dept) for multiple table views.
+Employee Table
+CREATE TABLE Employee (
+    EMPNO INT PRIMARY KEY,
+    ENAME VARCHAR(50),
+    JOB VARCHAR(50),
+    SAL INT,
+    DEPTNO INT
+);
+
+INSERT INTO Employee VALUES (1001, 'John Doe', 'Manager', 5000, 10);
+INSERT INTO Employee VALUES (1002, 'Jane Smith', 'Clerk', 3000, 20);
+INSERT INTO Employee VALUES (1003, 'Alice Brown', 'Analyst', 4000, 30);
+INSERT INTO Employee VALUES (1004, 'Mark Davis', 'Salesman', 3500, 20);
+
+
+Dept Table
+CREATE TABLE Dept (
+    DEPTNO INT PRIMARY KEY,
+    DNAME VARCHAR(50),
+    LOC VARCHAR(50)
+);
+
+INSERT INTO Dept VALUES (10, 'Accounting', 'New York');
+INSERT INTO Dept VALUES (20, 'Research', 'Dallas');
+INSERT INTO Dept VALUES (30, 'Sales', 'Chicago');
+
+
+
+Step 2: Creating Views
+
+1. Simple View - Managers Only
+CREATE VIEW ManagerView AS
+SELECT EMPNO, ENAME, JOB, SAL 
+FROM Employee
+WHERE JOB = 'Manager';
+
+
+2. Updatable View - Salary Info
+CREATE VIEW SalaryView AS
+SELECT EMPNO, ENAME, SAL
+FROM Employee;
+
+
+This view can be updated, affecting the base table.
+
+3. Multi-table View - Employee & Dept Details
+CREATE VIEW EmployeeDeptView AS
+SELECT E.EMPNO, E.ENAME, E.JOB, D.DNAME, D.LOC
+FROM Employee E
+JOIN Dept D ON E.DEPTNO = D.DEPTNO;
+
+
+Updating Base Table via View
+Updating Salary in Base Table Using SalaryView
+UPDATE SalaryView
+SET SAL = 5500
+WHERE EMPNO = 1001;
+
+
+
+
+
+
+

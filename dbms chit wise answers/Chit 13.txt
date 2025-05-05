@@ -1,0 +1,41 @@
+a) Display all employees earning more than all the managers
+SELECT * FROM Employee
+WHERE SAL > (SELECT MAX(SAL) FROM Employee WHERE JOB = 'MANAGER');
+
+
+b) Display all employees earning more than any manager
+SELECT * FROM Employee
+WHERE SAL > (SELECT MIN(SAL) FROM Employee WHERE JOB = 'MANAGER');
+
+
+c) Select employee number, job & salaries of all Analysts earning more than any manager
+SELECT EMPNO, JOB, SAL FROM Employee
+WHERE JOB = 'ANALYST' AND SAL > (SELECT MIN(SAL) FROM Employee WHERE JOB = 'MANAGER');
+
+
+d) Select all employees who work in DALLAS
+SELECT E.* 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE D.LOC = 'DALLAS';
+
+
+e) Select department name & location of all employees working for CLARK
+SELECT D.DNAME, D.LOC 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.ENAME = 'CLARK';
+
+
+f) Select all departmental information for all managers
+SELECT E.*, D.* 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.JOB = 'MANAGER';
+
+
+g) Display the first maximum salary
+SELECT MAX(SAL) AS First_Max_Salary FROM Employee;
+
+
+

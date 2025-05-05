@@ -1,0 +1,36 @@
+1) Display job-wise maximum salary
+SELECT JOB, MAX(SAL) AS Max_Salary
+FROM Employee
+GROUP BY JOB;
+
+
+2) Display departments having more than 3 employees
+SELECT DEPTNO, COUNT(*) AS Employee_Count
+FROM Employee
+GROUP BY DEPTNO
+HAVING COUNT(*) > 3;
+
+
+3) Display job-wise average salaries, excluding employee numbers 7788 to 7790
+SELECT JOB, AVG(SAL) AS Avg_Salary
+FROM Employee
+WHERE EMPNO NOT BETWEEN 7788 AND 7790
+GROUP BY JOB;
+
+
+4) Display department-wise total salaries for Managers & Analysts, only if average salary is ≥ 3000
+SELECT DEPTNO, JOB, SUM(SAL) AS Total_Salary
+FROM Employee
+WHERE JOB IN ('MANAGER', 'ANALYST')
+GROUP BY DEPTNO, JOB
+HAVING AVG(SAL) >= 3000;
+
+
+5) Select only duplicate records along with their count
+SELECT EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO, COUNT(*)
+FROM Employee
+GROUP BY EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO
+HAVING COUNT(*) > 1;
+
+
+

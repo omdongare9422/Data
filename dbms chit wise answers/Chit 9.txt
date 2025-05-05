@@ -1,0 +1,48 @@
+Create the Student Table
+
+
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Marks INT
+);
+
+
+Step 2: Create a StudentLog Table for Tracking Changes
+
+
+CREATE TABLE StudentLog (
+    LogID INT PRIMARY KEY AUTO_INCREMENT,
+    StudentID INT,
+    OldMarks INT,
+    NewMarks INT,
+    ChangeDate DATE
+);
+
+
+Step 3: Create a Row-Level Trigger
+This trigger automatically records changes when a student's Marks are updated.
+
+CREATE TRIGGER MarksUpdateTrigger
+AFTER UPDATE OF Marks ON Student
+FOR EACH ROW
+BEGIN
+    INSERT INTO StudentLog (StudentID, OldMarks, NewMarks, ChangeDate)
+    VALUES (:OLD.StudentID, :OLD.Marks, :NEW.Marks, SYSDATE);
+END;
+
+
+Step 4: Test the Trigger
+Now, update a student's marks and see the log entry:
+
+UPDATE Student
+SET Marks = 85
+WHERE StudentID = 101;
+
+
+
+INSERT INTO Student VALUES (101, 'Alice Johnson', 85);
+INSERT INTO Student VALUES (102, 'Bob Williams', 78);
+INSERT INTO Student VALUES (103, 'Charlie Brown', 92);
+INSERT INTO Student VALUES (104, 'David Smith', 88);
+INSERT INTO Student VALUES (105, 'Emma Davis', 74);

@@ -1,0 +1,43 @@
+a) Display job-wise maximum salary
+SELECT JOB, MAX(SAL) AS Max_Salary
+FROM Employee
+GROUP BY JOB;
+
+
+b) Select all departmental information for all managers
+SELECT E.*, D.*
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.JOB = 'MANAGER';
+
+
+c) Display all employees whose total salary (SAL + COMM) is more than 2000
+SELECT * 
+FROM Employee 
+WHERE (SAL + COALESCE(COMM, 0)) > 2000;
+
+
+(Using COALESCE to handle NULL commission values.)
+d) Select department name & location of all employees working for CLARK
+SELECT D.DNAME, D.LOC 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.ENAME = 'CLARK';
+
+
+e) Display all managers working in department 20 & 30
+SELECT * FROM Employee 
+WHERE JOB = 'MANAGER' AND DEPTNO IN (20, 30);
+
+
+f) Display all employees earning salary NOT in the range of 2500 to 5000 in department 10 & 20
+SELECT * FROM Employee
+WHERE DEPTNO IN (10, 20) AND SAL NOT BETWEEN 2500 AND 5000;
+
+
+g) Display all managers who don’t have a manager
+SELECT * FROM Employee 
+WHERE JOB = 'MANAGER' AND MGR IS NULL;
+
+
+

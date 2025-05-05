@@ -1,0 +1,36 @@
+a) Display all employees earning 2500 or more in department 20
+SELECT * FROM Employee 
+WHERE DEPTNO = 20 AND SAL >= 2500;
+
+
+b) Display all Managers working in departments 20 & 30
+SELECT * FROM Employee 
+WHERE JOB = 'MANAGER' AND DEPTNO IN (20, 30);
+
+
+c) Display all Managers who don’t have a Manager
+SELECT * FROM Employee 
+WHERE JOB = 'MANAGER' AND MGR IS NULL;
+
+
+d) Display all employees receiving commission whose designation is neither Manager nor Analyst
+SELECT * FROM Employee 
+WHERE COMM IS NOT NULL AND JOB NOT IN ('MANAGER', 'ANALYST');
+
+
+e) Display all Analysts whose name does not end with ‘S’
+SELECT * FROM Employee 
+WHERE JOB = 'ANALYST' AND ENAME NOT LIKE '%S';
+
+
+f) Display all employees whose name has 'E' as the second last character
+SELECT * FROM Employee 
+WHERE ENAME LIKE '%E_';
+
+
+g) Display all employees whose total salary (SAL + COMM) exceeds 2000
+SELECT * FROM Employee 
+WHERE (SAL + COALESCE(COMM, 0)) > 2000;
+
+
+

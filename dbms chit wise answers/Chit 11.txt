@@ -1,0 +1,55 @@
+CREATE TABLE Emp (
+    eno INT PRIMARY KEY,
+    ename VARCHAR(50) NOT NULL,
+    designation VARCHAR(50),
+    salary INT CHECK (salary > 0),
+    Date_Of_Joining DATE,
+    dno INT
+);
+
+INSERT INTO Emp VALUES (101, 'John Doe', 'Manager', 60000, '2015-08-10', 1);
+INSERT INTO Emp VALUES (102, 'Jane Smith', 'Clerk', 35000, '2017-02-15', 2);
+INSERT INTO Emp VALUES (103, 'Bob Williams', 'Analyst', 55000, '2018-06-22', 3);
+INSERT INTO Emp VALUES (104, 'Mr. Advait', 'Sales Executive', 45000, '2019-10-05', 2);
+INSERT INTO Emp VALUES (105, 'Mr. Roy', 'Software Engineer', 50000, '2016-12-01', 4);
+
+
+CREATE TABLE Dept (
+    dno INT PRIMARY KEY,
+    dname VARCHAR(50),
+    loc VARCHAR(50)
+);
+
+INSERT INTO Dept VALUES (1, 'Accounting', 'New York');
+INSERT INTO Dept VALUES (2, 'Research', 'Pune');
+INSERT INTO Dept VALUES (3, 'Quality', 'Chicago');
+INSERT INTO Dept VALUES (4, 'Computer Science', 'Dallas');
+
+
+
+1. Add column phone_No to Emp table
+ALTER TABLE Emp ADD phone_No INT;
+
+
+2. Delete employees whose designation is 'Manager'
+DELETE FROM Emp WHERE designation = 'Manager';
+
+
+3. Display the count of employees department-wise
+SELECT dno, COUNT(*) AS Employee_Count 
+FROM Emp 
+GROUP BY dno;
+
+
+4. Display the name of the employee who is 'Manager' of 'Account Department'
+SELECT e.ename 
+FROM Emp e
+JOIN Dept d ON e.dno = d.dno
+WHERE e.designation = 'Manager' AND d.dname = 'Account Department';
+
+
+5. Display employees earning more than 50,000 in the 'Quality' department
+SELECT e.ename 
+FROM Emp e
+JOIN Dept d ON e.dno = d.dno
+WHERE e.salary > 50000 AND d.dname = 'Quality';

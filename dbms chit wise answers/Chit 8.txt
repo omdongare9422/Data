@@ -1,0 +1,44 @@
+Step 1: Creating a Stored Procedure
+
+This stored procedure will increase an employee’s salary based on their employee number (EMPNO).
+CREATE OR REPLACE PROCEDURE IncreaseSalary (
+    p_EMPNO IN Employee.EMPNO%TYPE,
+    p_Increment IN Employee.SAL%TYPE
+) AS
+BEGIN
+    UPDATE Employee
+    SET SAL = SAL + p_Increment
+    WHERE EMPNO = p_EMPNO;
+    
+    COMMIT; -- Ensures changes persist
+END;
+
+
+Executing the Stored Procedure
+BEGIN
+    IncreaseSalary(7369, 500); -- Increases SMITH's salary by 500
+END;
+
+
+
+Step 2: Creating a Function
+This function calculates the total salary (SAL + COMM) of an employee.
+CREATE OR REPLACE FUNCTION GetTotalSalary (
+    p_EMPNO IN Employee.EMPNO%TYPE
+) RETURN NUMBER AS
+    v_TotalSalary NUMBER;
+BEGIN
+    SELECT SAL + COALESCE(COMM, 0)
+    INTO v_TotalSalary
+    FROM Employee
+    WHERE EMPNO = p_EMPNO;
+    
+    RETURN v_TotalSalary;
+END;
+
+
+Executing the Function
+SELECT GetTotalSalary(7521) AS TotalSalary FROM dual;
+
+
+

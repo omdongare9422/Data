@@ -1,0 +1,39 @@
+a) Display all Managers & Clerks who work in Accounts and Marketing departments
+SELECT E.* 
+FROM Employee E 
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.JOB IN ('MANAGER', 'CLERK') 
+AND D.DNAME IN ('ACCOUNTING', 'MARKETING');
+
+
+(Note: 'MARKETING' isn't listed in your dataset, but if you add it, this query will work.)
+b) Display all Salesmen who are not located in DALLAS
+SELECT E.* 
+FROM Employee E 
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.JOB = 'SALESMAN' 
+AND D.LOC <> 'DALLAS';
+
+
+c) Select Department Name & Location of all employees working for CLARK
+SELECT D.DNAME, D.LOC 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.ENAME = 'CLARK';
+
+
+d) Select all Departmental Information for all Managers
+SELECT E.*, D.* 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE E.JOB = 'MANAGER';
+
+
+e) Select all Employees who work in DALLAS
+SELECT E.* 
+FROM Employee E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+WHERE D.LOC = 'DALLAS';
+
+
+
